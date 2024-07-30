@@ -1,0 +1,87 @@
+import { useQuery, gql } from '@apollo/client';
+// import { Welcome } from '../components/Welcome/Welcome';
+// import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
+import { Grid, Card, Text, Title, Loader, Center } from '@mantine/core';
+
+import TaskCard from '@/components/TaskCard';
+
+const GET_DATA = gql`
+  query Tasks($input: FilterTaskInput!) {
+    tasks(input: $input) {
+      id
+      name
+      dueDate
+      status
+      assignee {
+        id
+        fullName
+        email
+      }
+    }
+  }
+`;
+
+export function DashboardPage() {
+  const { loading, error, data } = useQuery(GET_DATA, { variables: { input: {} } });
+
+  console.log({ loading, error, data });
+
+  if (loading) {
+    return (
+      <Center>
+        <Loader />
+      </Center>
+    );
+  }
+  if (error) {
+    return (
+      <Center style={{ height: '100vh' }}>
+        <Text color="red" size="xl">
+          {error.message}
+        </Text>
+      </Center>
+    );
+  }
+
+  if (!data || !data.tasks) {
+    return (
+      <Center style={{ height: '100vh' }}>
+        <Text size="xl">No tasks found.</Text>
+      </Center>
+    );
+  }
+
+  const statuses = ['BACKLOG', 'TODO', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'];
+  const tasksByStatus = statuses.reduce(
+    (acc, status) => {
+      acc[status] = data?.tasks.filter((task: any) => task.status === status);
+      return acc;
+    },
+    {} as Record<string, any[]>
+  );
+
+  return (
+    <>
+      {/* <Welcome />
+      <ColorSchemeToggle /> */}
+      <Grid>
+        {statuses.map((status) => (
+          <Grid.Col key={status} span={4}>
+            <Card
+              shadow="sm"
+              padding="lg"
+              style={{ backgroundColor: 'transparent', color: 'white' }}
+            >
+              <Title order={3} style={{ color: 'white', marginBottom: '16px' }}>
+                {status} ({tasksByStatus[status].length})
+              </Title>
+              {tasksByStatus[status].map((task) => (
+                <TaskCard key={task.id} task={task} />
+              ))}
+            </Card>
+          </Grid.Col>
+        ))}
+      </Grid>
+    </>
+  );
+}
