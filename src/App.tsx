@@ -8,8 +8,6 @@ import { theme } from './theme';
 import client from './apollo/client';
 
 export default function App() {
-  console.log(client);
-
   return (
     <ApolloProvider client={client}>
       <MantineProvider theme={theme}>

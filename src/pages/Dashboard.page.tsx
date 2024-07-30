@@ -1,7 +1,8 @@
+import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 // import { Welcome } from '../components/Welcome/Welcome';
 // import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
-import { Grid, Card, Text, Title, Loader, Center } from '@mantine/core';
+import { Grid, Card, Text, Title, Loader, Center, TextInput } from '@mantine/core';
 
 import TaskCard from '@/components/TaskCard';
 
@@ -22,9 +23,16 @@ const GET_DATA = gql`
 `;
 
 export function DashboardPage() {
-  const { loading, error, data } = useQuery(GET_DATA, { variables: { input: {} } });
+  const [search, setSearch] = useState('');
+  const { loading, error, data } = useQuery(GET_DATA, {
+    variables: { input: search ? { name: search } : {} },
+  });
 
-  console.log({ loading, error, data });
+  console.log({ loading, error, data, search });
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(event.target.value);
+  };
 
   if (loading) {
     return (
@@ -64,6 +72,12 @@ export function DashboardPage() {
     <>
       {/* <Welcome />
       <ColorSchemeToggle /> */}
+      <TextInput
+        placeholder="Search tasks"
+        value={search}
+        onChange={handleSearchChange}
+        style={{ marginBottom: '16px' }}
+      />
       <Grid>
         {statuses.map((status) => (
           <Grid.Col key={status} span={4}>
