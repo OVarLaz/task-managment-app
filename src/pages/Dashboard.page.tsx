@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useQuery, gql } from '@apollo/client';
 // import { Welcome } from '../components/Welcome/Welcome';
 // import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
-import { Grid, Card, Text, Title, Loader, Center, TextInput } from '@mantine/core';
+import { Grid, Card, Text, Title, Loader, Center, TextInput, Button } from '@mantine/core';
 
 import TaskCard from '@/components/TaskCard';
+import TaskForm from '@/components/TaskForm';
 
 const GET_DATA = gql`
   query Tasks($input: FilterTaskInput!) {
@@ -24,6 +25,13 @@ const GET_DATA = gql`
 
 export function DashboardPage() {
   const [search, setSearch] = useState('');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refreshTasks, setRefreshTasks] = useState(false);
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => setIsModalOpen(false);
+  const handleTaskCreated = () => setRefreshTasks(!refreshTasks);
+
   const { loading, error, data } = useQuery(GET_DATA, {
     variables: { input: search ? { name: search } : {} },
   });
@@ -78,6 +86,8 @@ export function DashboardPage() {
         onChange={handleSearchChange}
         style={{ marginBottom: '16px' }}
       />
+      <Button onClick={handleOpenModal}>Create Task</Button>
+      {isModalOpen && <TaskForm onClose={handleCloseModal} onTaskCreated={handleTaskCreated} />}
       <Grid>
         {statuses.map((status) => (
           <Grid.Col key={status} span={4}>

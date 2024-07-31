@@ -1,6 +1,7 @@
 import React from 'react';
 
 import '@mantine/core/styles.css';
+import '@mantine/dates/styles.css';
 import { ApolloProvider } from '@apollo/client';
 import { MantineProvider } from '@mantine/core';
 import { Router } from './Router';
