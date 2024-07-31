@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery, gql } from '@apollo/client';
 // import { Welcome } from '../components/Welcome/Welcome';
 // import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
@@ -32,7 +32,7 @@ export function DashboardPage() {
   const handleCloseModal = () => setIsModalOpen(false);
   const handleTaskCreated = () => setRefreshTasks(!refreshTasks);
 
-  const { loading, error, data } = useQuery(GET_DATA, {
+  const { loading, error, data, refetch } = useQuery(GET_DATA, {
     variables: { input: search ? { name: search } : {} },
   });
 
@@ -41,6 +41,10 @@ export function DashboardPage() {
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
   };
+
+  useEffect(() => {
+    refetch();
+  }, [refreshTasks]);
 
   if (loading) {
     return (
