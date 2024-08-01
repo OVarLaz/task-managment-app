@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { gql, useMutation, useQuery } from '@apollo/client';
+import { gql, useQuery } from '@apollo/client';
 import { Modal, Button, TextInput, Select, Group } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import { CreateTaskMutation } from '@/graphql/mutations';
 
 const GET_USERS = gql`
   query Users {
@@ -14,24 +13,27 @@ const GET_USERS = gql`
   }
 `;
 
-const TaskForm: React.FC<{ onClose: () => void; onTaskCreated: () => void }> = ({
-  onClose,
-  onTaskCreated,
-}) => {
-  const [name, setName] = useState<string>('');
-  const [pointEstimate, setPointEstimate] = useState<string | null>('');
-  const [status, setStatus] = useState<string | null>('');
-  const [assignee, setAssignee] = useState<string | null>(null);
-  const [tags, setTags] = useState<string | null>('');
-  const [dueDate, setDueDate] = useState<Date | null>(null);
+const TaskForm: React.FC<{
+  task?: any;
+  onMutate: any;
+  loading: any;
+  error: any;
+  onClose: () => void;
+  refetchTask: () => void;
+}> = ({ task, onMutate, loading, error, onClose, refetchTask }) => {
+  const [id, setId] = useState<string | null>(task?.id);
+  const [name, setName] = useState<string>(task?.name || '');
+  const [pointEstimate, setPointEstimate] = useState<string | null>(task?.pointEstimate);
+  const [status, setStatus] = useState<string | null>(task?.status || '');
+  const [assignee, setAssignee] = useState<string | null>(task?.assigneeId);
+  const [tags, setTags] = useState<string | null>(task?.tags || '');
+  const [dueDate, setDueDate] = useState<Date | null>(task?.dueDate);
 
   const { loading: loadUsers, error: errorUsers, data: usersData } = useQuery(GET_USERS);
 
-  const [createTask, { loading, error }] = useMutation(CreateTaskMutation);
-
   const handleCreateTask = async () => {
     try {
-      await createTask({
+      await onMutate({
         variables: {
           input: {
             name,
@@ -44,7 +46,7 @@ const TaskForm: React.FC<{ onClose: () => void; onTaskCreated: () => void }> = (
         },
       });
 
-      onTaskCreated();
+      refetchTask();
       onClose();
     } catch (e) {
       console.error(e);

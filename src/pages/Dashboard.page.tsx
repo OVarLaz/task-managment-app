@@ -1,11 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useQuery, gql } from '@apollo/client';
-// import { Welcome } from '../components/Welcome/Welcome';
-// import { ColorSchemeToggle } from '../components/ColorSchemeToggle/ColorSchemeToggle';
+import { useQuery, gql, useMutation } from '@apollo/client';
 import { Grid, Card, Text, Title, Loader, Center, TextInput, Button } from '@mantine/core';
 
 import TaskCard from '@/components/TaskCard';
 import TaskForm from '@/components/TaskForm';
+import { CreateTaskMutation, DeleteTaskMutation } from '@/graphql/mutations';
 
 const GET_DATA = gql`
   query Tasks($input: FilterTaskInput!) {
@@ -36,7 +35,26 @@ export function DashboardPage() {
     variables: { input: search ? { name: search } : {} },
   });
 
-  console.log({ loading, error, data, search });
+  const [createTask, { loading: createLoading, error: createError }] =
+    useMutation(CreateTaskMutation);
+
+  const [deleteTask] = useMutation(DeleteTaskMutation);
+
+  const handleTaskDeleted = async (id: string) => {
+    try {
+      await deleteTask({
+        variables: {
+          input: {
+            id,
+          },
+        },
+      });
+
+      refetch();
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(event.target.value);
@@ -82,8 +100,6 @@ export function DashboardPage() {
 
   return (
     <>
-      {/* <Welcome />
-      <ColorSchemeToggle /> */}
       <TextInput
         placeholder="Search tasks"
         value={search}
@@ -91,7 +107,15 @@ export function DashboardPage() {
         style={{ marginBottom: '16px' }}
       />
       <Button onClick={handleOpenModal}>Create Task</Button>
-      {isModalOpen && <TaskForm onClose={handleCloseModal} onTaskCreated={handleTaskCreated} />}
+      {isModalOpen && (
+        <TaskForm
+          onMutate={createTask}
+          loading={createLoading}
+          error={createError}
+          onClose={handleCloseModal}
+          refetchTask={handleTaskCreated}
+        />
+      )}
       <Grid>
         {statuses.map((status) => (
           <Grid.Col key={status} span={4}>
@@ -104,7 +128,7 @@ export function DashboardPage() {
                 {status} ({tasksByStatus[status].length})
               </Title>
               {tasksByStatus[status].map((task) => (
-                <TaskCard key={task.id} task={task} />
+                <TaskCard key={task.id} task={task} onDelete={handleTaskDeleted} />
               ))}
             </Card>
           </Grid.Col>

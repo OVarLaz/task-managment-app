@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, Text, Group, Avatar, Badge, Menu, Button } from '@mantine/core';
 import { DotsIcon, EditIcon, TrashIcon } from '../ui/Icon';
 
-const TaskCard: React.FC<{ task: any }> = ({ task }) => (
+const TaskCard: React.FC<{ task: any; onDelete: any }> = ({ task, onDelete }) => (
   <Card
     shadow="sm"
     padding="lg"
@@ -22,7 +22,7 @@ const TaskCard: React.FC<{ task: any }> = ({ task }) => (
           <Menu.Item icon={<EditIcon size={14} />} onClick={undefined}>
             Edit
           </Menu.Item>
-          <Menu.Item icon={<TrashIcon size={14} />} color="red" onClick={undefined}>
+          <Menu.Item icon={<TrashIcon size={14} />} color="red" onClick={() => onDelete(task.id)}>
             Delete
           </Menu.Item>
         </Menu.Dropdown>
