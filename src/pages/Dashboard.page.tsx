@@ -29,7 +29,7 @@ export function DashboardPage() {
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
-  const handleTaskCreated = () => setRefreshTasks(!refreshTasks);
+  const handleTaskRefresh = () => setRefreshTasks(!refreshTasks);
 
   const { loading, error, data, refetch } = useQuery(GET_DATA, {
     variables: { input: search ? { name: search } : {} },
@@ -113,7 +113,7 @@ export function DashboardPage() {
           loading={createLoading}
           error={createError}
           onClose={handleCloseModal}
-          refetchTask={handleTaskCreated}
+          refetchTask={handleTaskRefresh}
         />
       )}
       <Grid>
@@ -128,7 +128,12 @@ export function DashboardPage() {
                 {status} ({tasksByStatus[status].length})
               </Title>
               {tasksByStatus[status].map((task) => (
-                <TaskCard key={task.id} task={task} onDelete={handleTaskDeleted} />
+                <TaskCard
+                  key={task.id}
+                  task={task}
+                  onDelete={handleTaskDeleted}
+                  refetchTask={handleTaskRefresh}
+                />
               ))}
             </Card>
           </Grid.Col>

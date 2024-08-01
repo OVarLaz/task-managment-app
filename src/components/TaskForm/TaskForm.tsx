@@ -14,14 +14,15 @@ const GET_USERS = gql`
 `;
 
 const TaskForm: React.FC<{
+  edit?: boolean;
   task?: any;
   onMutate: any;
   loading: any;
   error: any;
   onClose: () => void;
   refetchTask: () => void;
-}> = ({ task, onMutate, loading, error, onClose, refetchTask }) => {
-  const [id, setId] = useState<string | null>(task?.id);
+}> = ({ edit = false, task, onMutate, loading, error, onClose, refetchTask }) => {
+  const [id] = useState<string | null>(task?.id);
   const [name, setName] = useState<string>(task?.name || '');
   const [pointEstimate, setPointEstimate] = useState<string | null>(task?.pointEstimate);
   const [status, setStatus] = useState<string | null>(task?.status || '');
@@ -42,6 +43,7 @@ const TaskForm: React.FC<{
             assigneeId: assignee,
             tags,
             dueDate: dueDate?.toISOString(),
+            ...(edit && { id }),
           },
         },
       });
