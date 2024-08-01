@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { gql, useQuery } from '@apollo/client';
-import { Modal, Button, TextInput, Select, Group } from '@mantine/core';
+import { Modal, Button, TextInput, Select, Group, Avatar, Text } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 
 const GET_USERS = gql`
@@ -58,11 +58,18 @@ const TaskForm: React.FC<{
   if (loadUsers) return <div>Loading...</div>;
   if (errorUsers) return <div>Error loading data</div>;
 
-  const usersOptions =
-    usersData?.users.map((user: { id: string; name: string }) => ({
-      value: user.id,
-      label: user.name,
-    })) || [];
+  const users = (usersData?.users ?? []).filter(Boolean);
+
+  const selectItem = ({ image, label, ...others }) => (
+    <div {...others}>
+      <Group noWrap>
+        <Avatar src={image} />
+        <div>
+          <Text>{label}</Text>
+        </div>
+      </Group>
+    </div>
+  );
 
   return (
     <Modal opened onClose={onClose} title="Create New Task">
@@ -88,10 +95,18 @@ const TaskForm: React.FC<{
       />
       <Select
         label="Assignee"
-        placeholder="Pick one"
-        data={undefined}
+        placeholder="Select assignee"
         value={assignee}
-        onChange={(value) => setAssignee(value || '')}
+        onChange={setAssignee}
+        itemComponent={selectItem}
+        data={users.map((user) => ({
+          value: user.id,
+          label: user.fullName,
+          image: user.avatar,
+        }))}
+        searchable
+        clearable
+        nothingFound="No users found"
       />
       <Select
         label="Tags"
