@@ -1,5 +1,9 @@
+export { default as CommentIcon } from './Comment';
+export { default as ClipIcon } from './Clip';
+export { default as ClockIcon } from './Clock';
 export { default as DotsIcon } from './Dots';
 export { default as EditIcon } from './Edit';
 export { default as GroupIcon } from './Group';
 export { default as ListIcon } from './List';
+export { default as SubtasksIcon } from './Subtasks';
 export { default as TrashIcon } from './Trash';

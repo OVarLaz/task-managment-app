@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Card, Text, Group, Avatar, Badge, Menu, Button } from '@mantine/core';
+import { Card, Text, Group, Avatar, Badge, Menu, Button, Tooltip, Flex } from '@mantine/core';
 import { useMutation } from '@apollo/client';
-import { DotsIcon, EditIcon, TrashIcon } from '../ui/Icon';
+import { ClipIcon, CommentIcon, DotsIcon, EditIcon, SubtasksIcon, TrashIcon } from '../ui/Icon';
 import { UpdateTaskMutation } from '@/graphql/mutations';
 import TaskForm from '../TaskForm';
 
@@ -24,9 +24,8 @@ const TaskCard: React.FC<{ task: any; onDelete: any; refetchTask: any }> = ({
         padding="lg"
         style={{ marginBottom: '16px', backgroundColor: '#333', color: 'white' }}
       >
-        <Group position="apart">
-          <Text weight={500}>{task.name}</Text>
-          <Badge color={task.dueDate === 'TODAY' ? 'red' : 'gray'}>{task.dueDate}</Badge>
+        <Group justify="space-between">
+          <Text>{task.name}</Text>
           <Menu>
             <Menu.Target>
               <Button variant="subtle">
@@ -47,10 +46,13 @@ const TaskCard: React.FC<{ task: any; onDelete: any; refetchTask: any }> = ({
             </Menu.Dropdown>
           </Menu>
         </Group>
-        <Text size="sm" style={{ marginTop: '8px' }}>
-          {task.points} Points
-        </Text>
-        <Group position="apart" style={{ marginTop: '8px' }}>
+        <Group justify="space-between">
+          <Text size="sm" style={{ marginTop: '8px' }}>
+            {task.pointEstimate} Points
+          </Text>
+          <Badge color={task.dueDate === 'TODAY' ? 'red' : 'gray'}>{task.dueDate}</Badge>
+        </Group>
+        <Group style={{ marginTop: '8px' }}>
           {task.tags &&
             task.tags.map((tag: string) => (
               <Badge key={tag} color="green">
@@ -58,17 +60,27 @@ const TaskCard: React.FC<{ task: any; onDelete: any; refetchTask: any }> = ({
               </Badge>
             ))}
         </Group>
-        <Group position="apart" style={{ marginTop: '8px' }}>
-          <Avatar
-            src={`https://api.adorable.io/avatars/40/${task.assignee?.email}.png`}
-            alt={task.assignee?.fullName}
-          />
-          <Text size="sm">{task.assignee?.fullName}</Text>
-        </Group>
-        <Group position="apart" style={{ marginTop: '8px' }}>
-          <Text size="sm">{task.points}</Text>
-          <Text size="sm">5</Text>
-          <Text size="sm">3</Text>
+        <Group style={{ marginTop: '8px' }} justify="space-between">
+          <Tooltip label={task.assignee?.fullName} withArrow>
+            <Avatar
+              src={
+                task.assignee?.avatar ||
+                `https://api.adorable.io/avatars/40/${task.assignee?.email}.png`
+              }
+              alt={task.assignee?.fullName}
+            />
+          </Tooltip>
+          <Group style={{ marginTop: '8px' }}>
+            <ClipIcon />
+            <Flex gap={4} align="center">
+              <Text>5</Text>
+              <SubtasksIcon />
+            </Flex>
+            <Flex gap={4} align="center">
+              <Text>3</Text>
+              <CommentIcon />
+            </Flex>
+          </Group>
         </Group>
       </Card>
       {isModalOpen && (

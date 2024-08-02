@@ -1,4 +1,4 @@
-import { AppShell, Button } from '@mantine/core';
+import { AppShell } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import Navbar from '../Navbar';
 
@@ -7,8 +7,8 @@ interface LayoutProps {
 }
 
 const Layout: React.FC<LayoutProps> = ({ children }) => {
-  const [mobileOpened, { toggle: toggleMobile }] = useDisclosure();
-  const [desktopOpened, { toggle: toggleDesktop }] = useDisclosure(true);
+  const [mobileOpened] = useDisclosure();
+  const [desktopOpened] = useDisclosure(true);
 
   return (
     <AppShell
@@ -23,15 +23,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <AppShell.Navbar>
         <Navbar />
       </AppShell.Navbar>
-      <AppShell.Main>
-        {/* <Button onClick={toggleDesktop} visibleFrom="sm">
-          Toggle navbar
-        </Button>
-        <Button onClick={toggleMobile} hiddenFrom="sm">
-          Toggle navbar
-        </Button> */}
-        {children}
-      </AppShell.Main>
+      <AppShell.Main>{children}</AppShell.Main>
     </AppShell>
   );
 };
