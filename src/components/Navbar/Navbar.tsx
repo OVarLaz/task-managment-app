@@ -5,8 +5,8 @@ import { GroupIcon, ListIcon } from '../ui/Icon';
 import classes from './Navbar.module.css';
 
 const data = [
-  { link: '', label: 'Dashboard', icon: <GroupIcon /> },
-  { link: '', label: 'My tasks', icon: <ListIcon /> },
+  { link: '', label: 'DASHBOARD', icon: <GroupIcon /> },
+  { link: '', label: 'MY TASKS', icon: <ListIcon /> },
 ];
 
 function Navbar() {
@@ -24,15 +24,14 @@ function Navbar() {
       }}
     >
       {item.icon}
-      <span>{item.label}</span>
+      <span className={classes.itemLabel}>{item.label}</span>
     </a>
   ));
 
   return (
     <nav className={classes.navbar}>
       <div className={classes.navbarMain}>
-        <Group className={classes.header} justify="space-between">
-          {/* <MantineLogo size={28} /> */}
+        <Group className={classes.header} justify="center">
           <img className="pl-8" src={logo} alt="Logo" width={30} />
           <div />
         </Group>

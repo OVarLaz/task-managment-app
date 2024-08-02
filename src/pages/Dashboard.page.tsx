@@ -1,26 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useQuery, gql, useMutation } from '@apollo/client';
+import { useQuery, useMutation } from '@apollo/client';
 import { Grid, Card, Text, Title, Loader, Center, TextInput, Button } from '@mantine/core';
 
 import TaskCard from '@/components/TaskCard';
 import TaskForm from '@/components/TaskForm';
 import { CreateTaskMutation, DeleteTaskMutation } from '@/graphql/mutations';
-
-const GET_DATA = gql`
-  query Tasks($input: FilterTaskInput!) {
-    tasks(input: $input) {
-      id
-      name
-      dueDate
-      status
-      assignee {
-        id
-        fullName
-        email
-      }
-    }
-  }
-`;
+import { GetTasksQuery } from '@/graphql/queries';
 
 export function DashboardPage() {
   const [search, setSearch] = useState('');
@@ -31,7 +16,7 @@ export function DashboardPage() {
   const handleCloseModal = () => setIsModalOpen(false);
   const handleTaskRefresh = () => setRefreshTasks(!refreshTasks);
 
-  const { loading, error, data, refetch } = useQuery(GET_DATA, {
+  const { loading, error, data, refetch } = useQuery(GetTasksQuery, {
     variables: { input: search ? { name: search } : {} },
   });
 

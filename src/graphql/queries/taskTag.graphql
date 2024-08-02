@@ -1,7 +1,0 @@
-query GetTagsEnumValues {
-  __type(name: "TaskTag") {
-    enumValues {
-      name
-    }
-  }
-}

@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
-import { gql, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Modal, Button, TextInput, Select, Group, Avatar, Text } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-
-const GET_USERS = gql`
-  query Users {
-    users {
-      fullName
-      id
-      avatar
-    }
-  }
-`;
+import { GetUsersQuery } from '@/graphql/queries';
 
 const TaskForm: React.FC<{
   edit?: boolean;
@@ -26,11 +17,11 @@ const TaskForm: React.FC<{
   const [name, setName] = useState<string>(task?.name || '');
   const [pointEstimate, setPointEstimate] = useState<string | null>(task?.pointEstimate);
   const [status, setStatus] = useState<string | null>(task?.status || '');
-  const [assignee, setAssignee] = useState<string | null>(task?.assigneeId);
+  const [assignee, setAssignee] = useState<string | null>(task?.assignee?.id);
   const [tags, setTags] = useState<string | null>(task?.tags || '');
   const [dueDate, setDueDate] = useState<Date | null>(task?.dueDate);
 
-  const { loading: loadUsers, error: errorUsers, data: usersData } = useQuery(GET_USERS);
+  const { loading: loadUsers, error: errorUsers, data: usersData } = useQuery(GetUsersQuery);
 
   const handleCreateTask = async () => {
     try {

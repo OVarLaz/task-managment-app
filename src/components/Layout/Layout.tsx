@@ -13,6 +13,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <AppShell
       padding="md"
+      withBorder={false}
       navbar={{
         width: 300,
         breakpoint: 'md',
