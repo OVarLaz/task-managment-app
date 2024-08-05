@@ -1,21 +1,26 @@
 import { gql } from '@apollo/client';
 import * as Apollo from '@apollo/client';
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
-export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = { [_ in K]?: never };
-export type Incremental<T> = T | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> = {
+  [_ in K]?: never;
+};
+export type Incremental<T> =
+  | T
+  | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
 const defaultOptions = {} as const;
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
-  ID: { input: string; output: string; }
-  String: { input: string; output: string; }
-  Boolean: { input: boolean; output: boolean; }
-  Int: { input: number; output: number; }
-  Float: { input: number; output: number; }
-  DateTime: { input: any; output: any; }
+  ID: { input: string; output: string };
+  String: { input: string; output: string };
+  Boolean: { input: boolean; output: boolean };
+  Int: { input: number; output: number };
+  Float: { input: number; output: number };
+  DateTime: { input: any; output: any };
 };
 
 export type CreateTaskInput = {
@@ -48,16 +53,13 @@ export type Mutation = {
   updateTask: Task;
 };
 
-
 export type MutationCreateTaskArgs = {
   input: CreateTaskInput;
 };
 
-
 export type MutationDeleteTaskArgs = {
   input: DeleteTaskInput;
 };
-
 
 export type MutationUpdateTaskArgs = {
   input: UpdateTaskInput;
@@ -69,7 +71,7 @@ export enum PointEstimate {
   Four = 'FOUR',
   One = 'ONE',
   Two = 'TWO',
-  Zero = 'ZERO'
+  Zero = 'ZERO',
 }
 
 export type Query = {
@@ -78,7 +80,6 @@ export type Query = {
   tasks: Array<Task>;
   users: Array<User>;
 };
-
 
 export type QueryTasksArgs = {
   input: FilterTaskInput;
@@ -90,7 +91,7 @@ export enum Status {
   Cancelled = 'CANCELLED',
   Done = 'DONE',
   InProgress = 'IN_PROGRESS',
-  Todo = 'TODO'
+  Todo = 'TODO',
 }
 
 export type Task = {
@@ -113,7 +114,7 @@ export enum TaskTag {
   Ios = 'IOS',
   NodeJs = 'NODE_JS',
   Rails = 'RAILS',
-  React = 'REACT'
+  React = 'REACT',
 }
 
 export type UpdateTaskInput = {
@@ -141,28 +142,30 @@ export type User = {
 /** Type of the User */
 export enum UserType {
   Admin = 'ADMIN',
-  Candidate = 'CANDIDATE'
+  Candidate = 'CANDIDATE',
 }
-
 
 export const CreateTaskDocument = gql`
-    mutation CreateTask($input: CreateTaskInput!) {
-  createTask(input: $input) {
-    id
-    name
-    dueDate
-    status
-    pointEstimate
-    assignee {
+  mutation CreateTask($input: CreateTaskInput!) {
+    createTask(input: $input) {
       id
-      fullName
-      email
+      name
+      dueDate
+      status
+      pointEstimate
+      assignee {
+        id
+        fullName
+        email
+      }
+      tags
     }
-    tags
   }
-}
-    `;
-export type CreateTaskMutationFn = Apollo.MutationFunction<CreateTaskMutation, CreateTaskMutationVariables>;
+`;
+export type CreateTaskMutationFn = Apollo.MutationFunction<
+  CreateTaskMutation,
+  CreateTaskMutationVariables
+>;
 
 /**
  * __useCreateTaskMutation__
@@ -181,21 +184,32 @@ export type CreateTaskMutationFn = Apollo.MutationFunction<CreateTaskMutation, C
  *   },
  * });
  */
-export function useCreateTaskMutation(baseOptions?: Apollo.MutationHookOptions<CreateTaskMutation, CreateTaskMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateTaskMutation, CreateTaskMutationVariables>(CreateTaskDocument, options);
-      }
+export function useCreateTaskMutation(
+  baseOptions?: Apollo.MutationHookOptions<CreateTaskMutation, CreateTaskMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<CreateTaskMutation, CreateTaskMutationVariables>(
+    CreateTaskDocument,
+    options
+  );
+}
 export type CreateTaskMutationHookResult = ReturnType<typeof useCreateTaskMutation>;
 export type CreateTaskMutationResult = Apollo.MutationResult<CreateTaskMutation>;
-export type CreateTaskMutationOptions = Apollo.BaseMutationOptions<CreateTaskMutation, CreateTaskMutationVariables>;
+export type CreateTaskMutationOptions = Apollo.BaseMutationOptions<
+  CreateTaskMutation,
+  CreateTaskMutationVariables
+>;
 export const MutationDocument = gql`
-    mutation Mutation($input: DeleteTaskInput!) {
-  deleteTask(input: $input) {
-    id
+  mutation Mutation($input: DeleteTaskInput!) {
+    deleteTask(input: $input) {
+      id
+    }
   }
-}
-    `;
-export type MutationMutationFn = Apollo.MutationFunction<MutationMutation, MutationMutationVariables>;
+`;
+export type MutationMutationFn = Apollo.MutationFunction<
+  MutationMutation,
+  MutationMutationVariables
+>;
 
 /**
  * __useMutationMutation__
@@ -214,31 +228,39 @@ export type MutationMutationFn = Apollo.MutationFunction<MutationMutation, Mutat
  *   },
  * });
  */
-export function useMutationMutation(baseOptions?: Apollo.MutationHookOptions<MutationMutation, MutationMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<MutationMutation, MutationMutationVariables>(MutationDocument, options);
-      }
+export function useMutationMutation(
+  baseOptions?: Apollo.MutationHookOptions<MutationMutation, MutationMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<MutationMutation, MutationMutationVariables>(MutationDocument, options);
+}
 export type MutationMutationHookResult = ReturnType<typeof useMutationMutation>;
 export type MutationMutationResult = Apollo.MutationResult<MutationMutation>;
-export type MutationMutationOptions = Apollo.BaseMutationOptions<MutationMutation, MutationMutationVariables>;
+export type MutationMutationOptions = Apollo.BaseMutationOptions<
+  MutationMutation,
+  MutationMutationVariables
+>;
 export const UpdateTaskDocument = gql`
-    mutation UpdateTask($input: UpdateTaskInput!) {
-  updateTask(input: $input) {
-    id
-    name
-    dueDate
-    status
-    pointEstimate
-    assignee {
+  mutation UpdateTask($input: UpdateTaskInput!) {
+    updateTask(input: $input) {
       id
-      fullName
-      email
+      name
+      dueDate
+      status
+      pointEstimate
+      assignee {
+        id
+        fullName
+        email
+      }
+      tags
     }
-    tags
   }
-}
-    `;
-export type UpdateTaskMutationFn = Apollo.MutationFunction<UpdateTaskMutation, UpdateTaskMutationVariables>;
+`;
+export type UpdateTaskMutationFn = Apollo.MutationFunction<
+  UpdateTaskMutation,
+  UpdateTaskMutationVariables
+>;
 
 /**
  * __useUpdateTaskMutation__
@@ -257,30 +279,38 @@ export type UpdateTaskMutationFn = Apollo.MutationFunction<UpdateTaskMutation, U
  *   },
  * });
  */
-export function useUpdateTaskMutation(baseOptions?: Apollo.MutationHookOptions<UpdateTaskMutation, UpdateTaskMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateTaskMutation, UpdateTaskMutationVariables>(UpdateTaskDocument, options);
-      }
+export function useUpdateTaskMutation(
+  baseOptions?: Apollo.MutationHookOptions<UpdateTaskMutation, UpdateTaskMutationVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useMutation<UpdateTaskMutation, UpdateTaskMutationVariables>(
+    UpdateTaskDocument,
+    options
+  );
+}
 export type UpdateTaskMutationHookResult = ReturnType<typeof useUpdateTaskMutation>;
 export type UpdateTaskMutationResult = Apollo.MutationResult<UpdateTaskMutation>;
-export type UpdateTaskMutationOptions = Apollo.BaseMutationOptions<UpdateTaskMutation, UpdateTaskMutationVariables>;
+export type UpdateTaskMutationOptions = Apollo.BaseMutationOptions<
+  UpdateTaskMutation,
+  UpdateTaskMutationVariables
+>;
 export const TasksDocument = gql`
-    query Tasks($input: FilterTaskInput!) {
-  tasks(input: $input) {
-    id
-    name
-    dueDate
-    status
-    pointEstimate
-    tags
-    assignee {
+  query Tasks($input: FilterTaskInput!) {
+    tasks(input: $input) {
       id
-      fullName
-      email
+      name
+      dueDate
+      status
+      pointEstimate
+      tags
+      assignee {
+        id
+        fullName
+        email
+      }
     }
   }
-}
-    `;
+`;
 
 /**
  * __useTasksQuery__
@@ -298,31 +328,38 @@ export const TasksDocument = gql`
  *   },
  * });
  */
-export function useTasksQuery(baseOptions: Apollo.QueryHookOptions<TasksQuery, TasksQueryVariables> & ({ variables: TasksQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<TasksQuery, TasksQueryVariables>(TasksDocument, options);
-      }
-export function useTasksLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<TasksQuery, TasksQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<TasksQuery, TasksQueryVariables>(TasksDocument, options);
-        }
-export function useTasksSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<TasksQuery, TasksQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<TasksQuery, TasksQueryVariables>(TasksDocument, options);
-        }
+export function useTasksQuery(
+  baseOptions: Apollo.QueryHookOptions<TasksQuery, TasksQueryVariables> &
+    ({ variables: TasksQueryVariables; skip?: boolean } | { skip: boolean })
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<TasksQuery, TasksQueryVariables>(TasksDocument, options);
+}
+export function useTasksLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<TasksQuery, TasksQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<TasksQuery, TasksQueryVariables>(TasksDocument, options);
+}
+export function useTasksSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<TasksQuery, TasksQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<TasksQuery, TasksQueryVariables>(TasksDocument, options);
+}
 export type TasksQueryHookResult = ReturnType<typeof useTasksQuery>;
 export type TasksLazyQueryHookResult = ReturnType<typeof useTasksLazyQuery>;
 export type TasksSuspenseQueryHookResult = ReturnType<typeof useTasksSuspenseQuery>;
 export type TasksQueryResult = Apollo.QueryResult<TasksQuery, TasksQueryVariables>;
 export const UsersDocument = gql`
-    query Users {
-  users {
-    fullName
-    id
-    avatar
+  query Users {
+    users {
+      fullName
+      id
+      avatar
+    }
   }
-}
-    `;
+`;
 
 /**
  * __useUsersQuery__
@@ -339,18 +376,24 @@ export const UsersDocument = gql`
  *   },
  * });
  */
-export function useUsersQuery(baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
-      }
-export function useUsersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
-        }
-export function useUsersSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<UsersQuery, UsersQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
-        }
+export function useUsersQuery(
+  baseOptions?: Apollo.QueryHookOptions<UsersQuery, UsersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+}
+export function useUsersLazyQuery(
+  baseOptions?: Apollo.LazyQueryHookOptions<UsersQuery, UsersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useLazyQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+}
+export function useUsersSuspenseQuery(
+  baseOptions?: Apollo.SuspenseQueryHookOptions<UsersQuery, UsersQueryVariables>
+) {
+  const options = { ...defaultOptions, ...baseOptions };
+  return Apollo.useSuspenseQuery<UsersQuery, UsersQueryVariables>(UsersDocument, options);
+}
 export type UsersQueryHookResult = ReturnType<typeof useUsersQuery>;
 export type UsersLazyQueryHookResult = ReturnType<typeof useUsersLazyQuery>;
 export type UsersSuspenseQueryHookResult = ReturnType<typeof useUsersSuspenseQuery>;

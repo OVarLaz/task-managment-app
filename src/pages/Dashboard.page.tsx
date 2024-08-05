@@ -1,10 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import { Grid, Card, Text, Title, Loader, Center, TextInput, Button } from '@mantine/core';
+import {
+  Grid,
+  Card,
+  Text,
+  Title,
+  Loader,
+  Center,
+  TextInput,
+  Button,
+  Group,
+  ActionIcon,
+} from '@mantine/core';
 
 import TaskCard from '@/components/TaskCard';
 import TaskForm from '@/components/TaskForm';
-import { CreateTaskDocument, MutationDocument, TasksDocument } from '@/generated/graphql';
+import { CreateTaskDocument, MutationDocument, Task, TasksDocument } from '@/generated/graphql';
+import { AddIcon, GroupIcon, ListIcon } from '@/components/ui/Icon';
 
 export function DashboardPage() {
   const [search, setSearch] = useState('');
@@ -73,10 +85,10 @@ export function DashboardPage() {
     );
   }
 
-  const statuses = ['BACKLOG', 'TODO', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'];
+  const statuses = ['BACKLOG', 'TODO', 'IN_PROGRESS', 'DONE', 'CANCELLED'];
   const tasksByStatus = statuses.reduce(
     (acc, status) => {
-      acc[status] = data?.tasks.filter((task: any) => task.status === status);
+      acc[status] = data?.tasks.filter((task: Task) => task.status === status);
       return acc;
     },
     {} as Record<string, any[]>
@@ -90,7 +102,19 @@ export function DashboardPage() {
         onChange={handleSearchChange}
         style={{ marginBottom: '16px' }}
       />
-      <Button onClick={handleOpenModal}>Create Task</Button>
+      <Group justify="space-between">
+        <Group>
+          <ActionIcon variant="transparent" color="white" size="lg">
+            <ListIcon />
+          </ActionIcon>
+          <ActionIcon variant="outline" color="#DA584B" size="lg">
+            <GroupIcon color="#DA584B" />
+          </ActionIcon>
+        </Group>
+        <Button onClick={handleOpenModal} color="#DA584B">
+          <AddIcon />
+        </Button>
+      </Group>
       {isModalOpen && (
         <TaskForm
           onMutate={createTask}
@@ -100,9 +124,9 @@ export function DashboardPage() {
           refetchTask={handleTaskRefresh}
         />
       )}
-      <Grid>
+      <Grid overflow="hidden">
         {statuses.map((status) => (
-          <Grid.Col key={status} span={4}>
+          <Grid.Col key={status} span={4} style={{ minWidth: '150px' }}>
             <Card
               shadow="sm"
               padding="lg"

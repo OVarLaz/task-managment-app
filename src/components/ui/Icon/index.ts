@@ -1,6 +1,7 @@
-export { default as CommentIcon } from './Comment';
+export { default as AddIcon } from './Add';
 export { default as ClipIcon } from './Clip';
 export { default as ClockIcon } from './Clock';
+export { default as CommentIcon } from './Comment';
 export { default as DotsIcon } from './Dots';
 export { default as EditIcon } from './Edit';
 export { default as GroupIcon } from './Group';
