@@ -1,0 +1,5 @@
+mutation Mutation($input: DeleteTaskInput!) {
+  deleteTask(input: $input) {
+    id
+  }
+}

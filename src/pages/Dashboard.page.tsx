@@ -4,8 +4,7 @@ import { Grid, Card, Text, Title, Loader, Center, TextInput, Button } from '@man
 
 import TaskCard from '@/components/TaskCard';
 import TaskForm from '@/components/TaskForm';
-import { CreateTaskMutation, DeleteTaskMutation } from '@/graphql/mutations';
-import { GetTasksQuery } from '@/graphql/queries';
+import { CreateTaskDocument, MutationDocument, TasksDocument } from '@/generated/graphql';
 
 export function DashboardPage() {
   const [search, setSearch] = useState('');
@@ -16,14 +15,14 @@ export function DashboardPage() {
   const handleCloseModal = () => setIsModalOpen(false);
   const handleTaskRefresh = () => setRefreshTasks(!refreshTasks);
 
-  const { loading, error, data, refetch } = useQuery(GetTasksQuery, {
+  const { loading, error, data, refetch } = useQuery(TasksDocument, {
     variables: { input: search ? { name: search } : {} },
   });
 
   const [createTask, { loading: createLoading, error: createError }] =
-    useMutation(CreateTaskMutation);
+    useMutation(CreateTaskDocument);
 
-  const [deleteTask] = useMutation(DeleteTaskMutation);
+  const [deleteTask] = useMutation(MutationDocument);
 
   const handleTaskDeleted = async (id: string) => {
     try {

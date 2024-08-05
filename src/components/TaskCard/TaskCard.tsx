@@ -10,10 +10,10 @@ import {
   SubtasksIcon,
   TrashIcon,
 } from '../ui/Icon';
-import { UpdateTaskMutation } from '@/graphql/mutations';
 import TaskForm from '../TaskForm';
 import { pointsType, tagsColor, tagsType } from '@/types/shared';
 import { getDueDateLabel, isDueDateValid } from '@/utils/dates';
+import { UpdateTaskDocument } from '@/generated/graphql';
 
 interface TaskCardProps {
   task: any;
@@ -24,7 +24,7 @@ interface TaskCardProps {
 const TaskCard = ({ task, onDelete, refetchTask }: TaskCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [updateTask, { loading: updateLoading, error: updateError }] =
-    useMutation(UpdateTaskMutation);
+    useMutation(UpdateTaskDocument);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);

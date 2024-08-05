@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "scripts": {
     "dev": "vite",
+    "codegen": "graphql-codegen",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
@@ -19,7 +20,12 @@
     "storybook:build": "storybook build"
   },
   "dependencies": {
-    "@apollo/client": "^3.11.1",
+    "@apollo/client": "^3.11.2",
+    "@graphql-codegen/cli": "^5.0.2",
+    "@graphql-codegen/typescript": "^4.0.9",
+    "@graphql-codegen/typescript-operations": "^4.2.3",
+    "@graphql-codegen/typescript-react-apollo": "^4.3.0",
+    "@graphql-codegen/typescript-react-query": "^6.1.0",
     "@mantine/core": "7.11.2",
     "@mantine/dates": "^7.11.2",
     "@mantine/hooks": "7.11.2",

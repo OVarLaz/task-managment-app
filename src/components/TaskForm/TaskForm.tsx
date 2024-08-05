@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { Modal, Button, TextInput, Select, Group, Avatar, Text, MultiSelect } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
-import { GetUsersQuery } from '@/graphql/queries';
 import { pointsType, statusType, tagsType } from '@/types/shared';
+import { UsersDocument } from '@/generated/graphql';
 
 const TaskForm: React.FC<{
   edit?: boolean;
@@ -37,7 +37,7 @@ const TaskForm: React.FC<{
     label: value.toString(),
   }));
 
-  const { loading: loadUsers, error: errorUsers, data: usersData } = useQuery(GetUsersQuery);
+  const { loading: loadUsers, error: errorUsers, data: usersData } = useQuery(UsersDocument);
 
   const handleCreateTask = async () => {
     try {
