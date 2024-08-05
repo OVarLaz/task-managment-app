@@ -13,11 +13,11 @@ import {
 import TaskForm from '../TaskForm';
 import { pointsType, tagsColor, tagsType } from '@/types/shared';
 import { getDueDateLabel, isDueDateValid } from '@/utils/dates';
-import { UpdateTaskDocument } from '@/generated/graphql';
+import { Task, TaskTag, UpdateTaskDocument } from '@/generated/graphql';
 
 interface TaskCardProps {
-  task: any;
-  onDelete: () => void;
+  task: Task;
+  onDelete: (value: string) => void;
   refetchTask: () => void;
 }
 
@@ -40,21 +40,17 @@ const TaskCard = ({ task, onDelete, refetchTask }: TaskCardProps) => {
       >
         <Group justify="space-between">
           <Text fw={700}>{task.name}</Text>
-          <Menu>
+          <Menu position="bottom-end">
             <Menu.Target>
               <Button variant="subtle" style={{ padding: 0 }}>
                 <DotsIcon />
               </Button>
             </Menu.Target>
             <Menu.Dropdown>
-              <Menu.Item icon={<EditIcon size={14} />} onClick={handleOpenModal}>
+              <Menu.Item leftSection={<EditIcon size={14} />} onClick={handleOpenModal}>
                 Edit
               </Menu.Item>
-              <Menu.Item
-                icon={<TrashIcon size={14} />}
-                color="red"
-                onClick={() => onDelete(task.id)}
-              >
+              <Menu.Item leftSection={<TrashIcon size={14} />} onClick={() => onDelete(task.id)}>
                 Delete
               </Menu.Item>
             </Menu.Dropdown>
@@ -74,7 +70,7 @@ const TaskCard = ({ task, onDelete, refetchTask }: TaskCardProps) => {
         </Group>
         <Group style={{ marginTop: '8px' }}>
           {task.tags &&
-            task.tags.map((tag: string) => (
+            task.tags.map((tag: TaskTag) => (
               <Badge key={tag} variant="light" radius="sm" color={tagsColor[tag]}>
                 {tagsType[tag]}
               </Badge>
