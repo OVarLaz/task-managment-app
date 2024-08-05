@@ -1,9 +1,19 @@
 import React, { useState } from 'react';
 import { Card, Text, Group, Avatar, Badge, Menu, Button, Tooltip, Flex } from '@mantine/core';
 import { useMutation } from '@apollo/client';
-import { ClipIcon, CommentIcon, DotsIcon, EditIcon, SubtasksIcon, TrashIcon } from '../ui/Icon';
+import {
+  ClipIcon,
+  ClockIcon,
+  CommentIcon,
+  DotsIcon,
+  EditIcon,
+  SubtasksIcon,
+  TrashIcon,
+} from '../ui/Icon';
 import { UpdateTaskMutation } from '@/graphql/mutations';
 import TaskForm from '../TaskForm';
+import { pointsType, tagsColor, tagsType } from '@/types/shared';
+import { getDueDateLabel, isDueDateValid } from '@/utils/dates';
 
 const TaskCard: React.FC<{ task: any; onDelete: any; refetchTask: any }> = ({
   task,
@@ -25,7 +35,7 @@ const TaskCard: React.FC<{ task: any; onDelete: any; refetchTask: any }> = ({
         style={{ marginBottom: '16px', backgroundColor: '#333', color: 'white' }}
       >
         <Group justify="space-between">
-          <Text>{task.name}</Text>
+          <Text fw={700}>{task.name}</Text>
           <Menu>
             <Menu.Target>
               <Button variant="subtle">
@@ -48,15 +58,26 @@ const TaskCard: React.FC<{ task: any; onDelete: any; refetchTask: any }> = ({
         </Group>
         <Group justify="space-between">
           <Text size="sm" style={{ marginTop: '8px' }}>
-            {task.pointEstimate} Points
+            {pointsType[task.pointEstimate]}
           </Text>
-          <Badge color={task.dueDate === 'TODAY' ? 'red' : 'gray'}>{task.dueDate}</Badge>
+
+          <Badge
+            variant="light"
+            radius="sm"
+            size="lg"
+            color={isDueDateValid(task.dueDate) ? 'gray' : '#DA584B'}
+          >
+            <Flex gap={4} align="center">
+              <ClockIcon color={isDueDateValid(task.dueDate) ? 'gray' : '#DA584B'} />{' '}
+              <Text>{getDueDateLabel(task.dueDate)}</Text>
+            </Flex>
+          </Badge>
         </Group>
         <Group style={{ marginTop: '8px' }}>
           {task.tags &&
             task.tags.map((tag: string) => (
-              <Badge key={tag} color="green">
-                {tag}
+              <Badge key={tag} variant="light" radius="sm" color={tagsColor[tag]}>
+                {tagsType[tag]}
               </Badge>
             ))}
         </Group>

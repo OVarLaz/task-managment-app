@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { Modal, Button, TextInput, Select, Group, Avatar, Text } from '@mantine/core';
+import { Modal, Button, TextInput, Select, Group, Avatar, Text, MultiSelect } from '@mantine/core';
 import { DatePicker } from '@mantine/dates';
 import { GetUsersQuery } from '@/graphql/queries';
+import { pointsType, statusType, tagsType } from '@/types/shared';
 
 const TaskForm: React.FC<{
   edit?: boolean;
@@ -18,8 +19,23 @@ const TaskForm: React.FC<{
   const [pointEstimate, setPointEstimate] = useState<string | null>(task?.pointEstimate);
   const [status, setStatus] = useState<string | null>(task?.status || '');
   const [assignee, setAssignee] = useState<string | null>(task?.assignee?.id);
-  const [tags, setTags] = useState<string | null>(task?.tags || '');
+  const [tags, setTags] = useState<string[] | undefined>(task?.tags || []);
   const [dueDate, setDueDate] = useState<Date | null>(task?.dueDate);
+
+  const pointsOptions = Object.entries(pointsType).map(([key, value]) => ({
+    value: key,
+    label: value.toString(),
+  }));
+
+  const statusOptions = Object.entries(statusType).map(([key, value]) => ({
+    value: key,
+    label: value.toString(),
+  }));
+
+  const tagsOptions = Object.entries(tagsType).map(([key, value]) => ({
+    value: key,
+    label: value.toString(),
+  }));
 
   const { loading: loadUsers, error: errorUsers, data: usersData } = useQuery(GetUsersQuery);
 
@@ -73,14 +89,14 @@ const TaskForm: React.FC<{
       <Select
         label="Estimate"
         placeholder="Pick one"
-        data={['EIGHT', 'FOUR', 'ONE', 'TWO', 'ZERO']}
+        data={pointsOptions}
         value={pointEstimate}
         onChange={(value) => setPointEstimate(value || '')}
       />
       <Select
         label="Status"
         placeholder="Pick one"
-        data={['BACKLOG', 'CANCELLED', 'DONE', 'IN_PROGRESS', 'TODO']}
+        data={statusOptions}
         value={status}
         onChange={(value) => setStatus(value || '')}
       />
@@ -99,10 +115,10 @@ const TaskForm: React.FC<{
         clearable
         nothingFound="No users found"
       />
-      <Select
+      <MultiSelect
         label="Tags"
         placeholder="Pick multiple"
-        data={['ANDROID', 'IOS', 'NODE_JS', 'RAILS', 'REACT']}
+        data={tagsOptions}
         value={tags}
         onChange={(value) => setTags(value)}
         multiple
