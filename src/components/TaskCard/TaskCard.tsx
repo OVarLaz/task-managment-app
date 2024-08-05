@@ -15,17 +15,21 @@ import TaskForm from '../TaskForm';
 import { pointsType, tagsColor, tagsType } from '@/types/shared';
 import { getDueDateLabel, isDueDateValid } from '@/utils/dates';
 
-const TaskCard: React.FC<{ task: any; onDelete: any; refetchTask: any }> = ({
-  task,
-  onDelete,
-  refetchTask,
-}) => {
+interface TaskCardProps {
+  task: any;
+  onDelete: () => void;
+  refetchTask: () => void;
+}
+
+const TaskCard = ({ task, onDelete, refetchTask }: TaskCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [updateTask, { loading: updateLoading, error: updateError }] =
     useMutation(UpdateTaskMutation);
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
+
+  const isDueDate = isDueDateValid(task.dueDate);
 
   return (
     <>
@@ -38,7 +42,7 @@ const TaskCard: React.FC<{ task: any; onDelete: any; refetchTask: any }> = ({
           <Text fw={700}>{task.name}</Text>
           <Menu>
             <Menu.Target>
-              <Button variant="subtle">
+              <Button variant="subtle" style={{ padding: 0 }}>
                 <DotsIcon />
               </Button>
             </Menu.Target>
@@ -61,14 +65,9 @@ const TaskCard: React.FC<{ task: any; onDelete: any; refetchTask: any }> = ({
             {pointsType[task.pointEstimate]}
           </Text>
 
-          <Badge
-            variant="light"
-            radius="sm"
-            size="lg"
-            color={isDueDateValid(task.dueDate) ? 'gray' : '#DA584B'}
-          >
+          <Badge variant="light" radius="sm" size="lg" color={isDueDate ? 'gray' : '#DA584B'}>
             <Flex gap={4} align="center">
-              <ClockIcon color={isDueDateValid(task.dueDate) ? 'gray' : '#DA584B'} />{' '}
+              <ClockIcon color={isDueDate ? 'gray' : '#DA584B'} />{' '}
               <Text>{getDueDateLabel(task.dueDate)}</Text>
             </Flex>
           </Badge>

@@ -1,7 +1,14 @@
-export const isDueDateValid = (dueDate: string) => {
+export const isDueDateValid = (dueDate: string): boolean => {
   const today = new Date();
   const dueDateObj = new Date(dueDate);
-  return dueDateObj >= today;
+
+  const normalizeDate = (date: Date) =>
+    new Date(date.getFullYear(), date.getMonth(), date.getDate());
+
+  const normalizedToday = normalizeDate(today);
+  const normalizedDueDate = normalizeDate(dueDateObj);
+
+  return normalizedDueDate >= normalizedToday;
 };
 
 export const getDueDateLabel = (dueDate: string): string => {
@@ -20,5 +27,13 @@ export const getDueDateLabel = (dueDate: string): string => {
   if (dueDateObj.getTime() === yesterday.getTime()) {
     return 'YESTERDAY';
   }
-  return dueDate;
+  const options: Intl.DateTimeFormatOptions = {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+  };
+
+  const formatter = new Intl.DateTimeFormat('en-GB', options);
+  const formattedDate = formatter.format(dueDateObj).toUpperCase();
+  return formattedDate;
 };
