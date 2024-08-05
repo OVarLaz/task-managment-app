@@ -15,8 +15,15 @@ import {
 
 import TaskCard from '@/components/TaskCard';
 import TaskForm from '@/components/TaskForm';
-import { CreateTaskDocument, MutationDocument, Task, TasksDocument } from '@/generated/graphql';
+import {
+  CreateTaskDocument,
+  MutationDocument,
+  Status,
+  Task,
+  TasksDocument,
+} from '@/generated/graphql';
 import { AddIcon, GroupIcon, ListIcon } from '@/components/ui/Icon';
+import { statusType } from '@/types/shared';
 
 export function DashboardPage() {
   const [search, setSearch] = useState('');
@@ -85,7 +92,7 @@ export function DashboardPage() {
     );
   }
 
-  const statuses = ['BACKLOG', 'TODO', 'IN_PROGRESS', 'DONE', 'CANCELLED'];
+  const statuses = Object.keys(statusType) as Status[];
   const tasksByStatus = statuses.reduce(
     (acc, status) => {
       acc[status] = data?.tasks.filter((task: Task) => task.status === status);
@@ -133,7 +140,7 @@ export function DashboardPage() {
               style={{ backgroundColor: 'transparent', color: 'white' }}
             >
               <Title order={3} style={{ color: 'white', marginBottom: '16px' }}>
-                {status} ({tasksByStatus[status].length})
+                {statusType[status]} ({tasksByStatus[status].length})
               </Title>
               {tasksByStatus[status].map((task) => (
                 <TaskCard

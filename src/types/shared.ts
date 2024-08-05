@@ -1,3 +1,5 @@
+import { Status } from '@/generated/graphql';
+
 export const pointsType = {
   ZERO: '0 points',
   ONE: '1 points',
@@ -6,12 +8,12 @@ export const pointsType = {
   EIGHT: '8 points',
 };
 
-export const statusType = {
+export const statusType: Record<Status, string> = {
   BACKLOG: 'Backlog',
-  CANCELLED: 'Cancelled',
-  DONE: 'Done',
-  IN_PROGRESS: 'In Progress',
   TODO: 'ToDo',
+  IN_PROGRESS: 'In Progress',
+  DONE: 'Done',
+  CANCELLED: 'Cancelled',
 };
 
 export const tagsType = {
