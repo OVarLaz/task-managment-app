@@ -8,6 +8,7 @@ query Tasks($input: FilterTaskInput!) {
     tags
     assignee {
       id
+      avatar
       fullName
       email
     }

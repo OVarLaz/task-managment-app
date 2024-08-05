@@ -20,6 +20,7 @@ import {
   Flex,
   SelectProps,
   CheckIcon,
+  Box,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { pointsType, statusType, tagsType } from '@/types/shared';
@@ -39,6 +40,10 @@ interface TaskFormProps {
   onClose: () => void;
   refetchTask: () => void;
 }
+
+type ExtendedOption = SelectProps['renderOption'] & {
+  image?: string; // Add the image property, optional
+};
 
 const TaskForm = ({
   edit = false,
@@ -112,13 +117,18 @@ const TaskForm = ({
 
   const users = (usersData?.users ?? []).filter(Boolean);
 
-  const selectItem: SelectProps['renderOption'] = ({ option, checked }) => (
-    <Group flex="1" gap="xs">
-      <Avatar src={option.image} />
-      <Text>{option.label}</Text>
-      {checked && <CheckIcon style={{ marginInlineStart: 'auto' }} size={10} />}
-    </Group>
-  );
+  const selectItem: SelectProps['renderOption'] = ({ option, checked }) => {
+    const extendedOption = option as unknown as ExtendedOption;
+    return (
+      <Group flex="1" gap="xs">
+        <Avatar src={extendedOption.image} />
+        <Box w={115}>
+          <Text truncate="end">{option.label}</Text>
+        </Box>
+        {checked && <CheckIcon style={{ marginInlineStart: 'auto' }} size={10} />}
+      </Group>
+    );
+  };
 
   return (
     <Modal opened onClose={onClose} withCloseButton={false} size="auto" centered>
