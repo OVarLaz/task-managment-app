@@ -1,19 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 import {
-  Grid,
-  Card,
   Text,
-  Title,
   Loader,
   Center,
   TextInput,
   Button,
   Group,
   ActionIcon,
+  Flex,
+  Avatar,
 } from '@mantine/core';
 
-import TaskCard from '@/components/TaskCard';
 import TaskForm from '@/components/TaskForm';
 import {
   CreateTaskDocument,
@@ -22,11 +20,14 @@ import {
   Task,
   TasksDocument,
 } from '@/generated/graphql';
-import { AddIcon, GroupIcon, ListIcon } from '@/components/ui/Icon';
+import { AddIcon, GroupIcon, ListIcon, NotificationIcon, SearchIcon } from '@/components/ui/Icon';
 import { statusType } from '@/types/shared';
+import Kamban from '@/components/Kamban';
+import List from '@/components/List';
 
 export function DashboardPage() {
   const [search, setSearch] = useState('');
+  const [view, setView] = useState('group');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [refreshTasks, setRefreshTasks] = useState(false);
 
@@ -101,21 +102,50 @@ export function DashboardPage() {
     {} as Record<string, any[]>
   );
 
+  const handleVariant = (currentView: string) => (view === currentView ? 'outline' : 'transparent');
+  const handleColor = (currentView: string) => (view === currentView ? '#DA584B' : 'white');
+
   return (
     <>
       <TextInput
         placeholder="Search tasks"
+        size="md"
         value={search}
         onChange={handleSearchChange}
-        style={{ marginBottom: '16px' }}
+        style={{ marginBottom: '16px', padding: '1rem' }}
+        leftSection={<SearchIcon />}
+        rightSection={
+          <Flex
+            gap={4}
+            align="center"
+            style={{ padding: '1rem', position: 'relative', right: '15px' }}
+          >
+            <NotificationIcon />{' '}
+            <Avatar
+              src="https://api.adorable.io/avatars/40/yop.png"
+              alt="yop"
+              variant="transparent"
+            />
+          </Flex>
+        }
       />
-      <Group justify="space-between">
+      <Group justify="space-between" style={{ padding: '0 1rem' }}>
         <Group>
-          <ActionIcon variant="transparent" color="white" size="lg">
-            <ListIcon />
+          <ActionIcon
+            variant={handleVariant('list')}
+            color={handleColor('list')}
+            size="lg"
+            onClick={() => setView('list')}
+          >
+            <ListIcon color={handleColor('list')} />
           </ActionIcon>
-          <ActionIcon variant="outline" color="#DA584B" size="lg">
-            <GroupIcon color="#DA584B" />
+          <ActionIcon
+            variant={handleVariant('group')}
+            color={handleColor('group')}
+            size="lg"
+            onClick={() => setView('group')}
+          >
+            <GroupIcon color={handleColor('group')} />
           </ActionIcon>
         </Group>
         <Button onClick={handleOpenModal} color="#DA584B">
@@ -131,29 +161,16 @@ export function DashboardPage() {
           refetchTask={handleTaskRefresh}
         />
       )}
-      <Grid overflow="hidden">
-        {statuses.map((status) => (
-          <Grid.Col key={status} span={4} style={{ minWidth: '150px' }}>
-            <Card
-              shadow="sm"
-              padding="lg"
-              style={{ backgroundColor: 'transparent', color: 'white' }}
-            >
-              <Title order={3} style={{ color: 'white', marginBottom: '16px' }}>
-                {statusType[status]} ({tasksByStatus[status].length})
-              </Title>
-              {tasksByStatus[status].map((task) => (
-                <TaskCard
-                  key={task.id}
-                  task={task}
-                  onDelete={handleTaskDeleted}
-                  refetchTask={handleTaskRefresh}
-                />
-              ))}
-            </Card>
-          </Grid.Col>
-        ))}
-      </Grid>
+      {view === 'group' ? (
+        <Kamban
+          statuses={statuses}
+          tasksByStatus={tasksByStatus}
+          handleTaskDeleted={handleTaskDeleted}
+          handleTaskRefresh={handleTaskRefresh}
+        />
+      ) : (
+        <List statuses={statuses} tasksByStatus={tasksByStatus} />
+      )}
     </>
   );
 }
