@@ -24,12 +24,15 @@ import { AddIcon, GroupIcon, ListIcon, NotificationIcon, SearchIcon } from '@/co
 import { statusType } from '@/types/shared';
 import Kamban from '@/components/Kamban';
 import List from '@/components/List';
+import { useAuth } from '@/context/AuthContext';
 
 export function DashboardPage() {
   const [search, setSearch] = useState('');
   const [view, setView] = useState('group');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [refreshTasks, setRefreshTasks] = useState(false);
+
+  const { user } = useAuth();
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
@@ -109,22 +112,24 @@ export function DashboardPage() {
     <>
       <TextInput
         placeholder="Search tasks"
-        size="md"
+        size="lg"
         value={search}
         onChange={handleSearchChange}
         style={{ marginBottom: '16px', padding: '1rem' }}
         leftSection={<SearchIcon />}
         rightSection={
           <Flex
-            gap={4}
+            gap={6}
             align="center"
             style={{ padding: '1rem', position: 'relative', right: '15px' }}
           >
             <NotificationIcon />{' '}
             <Avatar
-              src="https://api.adorable.io/avatars/40/yop.png"
-              alt="yop"
-              variant="transparent"
+              src={user?.fullName}
+              alt={user?.fullName}
+              key={user?.fullName}
+              name={user?.fullName}
+              color="initials"
             />
           </Flex>
         }
