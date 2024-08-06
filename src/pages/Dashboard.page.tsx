@@ -71,7 +71,7 @@ export function DashboardPage() {
   if (loading) {
     return (
       <Center>
-        <Loader />
+        <Loader color="gray" />
       </Center>
     );
   }

@@ -21,6 +21,8 @@ import {
   SelectProps,
   CheckIcon,
   Box,
+  Center,
+  Loader,
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { pointsType, statusType, tagsType } from '@/types/shared';
@@ -108,7 +110,13 @@ const TaskForm = ({
     }
   };
 
-  if (loadUsers) return <div>Loading...</div>;
+  if (loadUsers) {
+    return (
+      <Center>
+        <Loader color="gray" size="xs" />
+      </Center>
+    );
+  }
   if (errorUsers) return <div>Error loading data</div>;
 
   const users = (usersData?.users ?? []).filter(Boolean);

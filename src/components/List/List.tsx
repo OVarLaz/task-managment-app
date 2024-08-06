@@ -42,9 +42,16 @@ const List = ({ statuses, tasksByStatus }: ListProps) => {
                   border: '1px solid #393D41',
                   borderRadius: '5px 5px 0 0',
                   backgroundColor: '#2C2F33',
+
+                  display: 'flex',
                 }}
               >
-                {statusType[status]} ({tasksByStatus[status].length})
+                <Text size="xl" style={{ fontWeight: 'bold', color: 'white' }}>
+                  {statusType[status]}
+                </Text>
+                <Text size="xl" style={{ marginLeft: '3px', fontWeight: 'bold', color: '#575b60' }}>
+                  ({tasksByStatus[status].length})
+                </Text>
               </Grid.Col>
             </Grid>
             <Collapse in={openedSections[status]}>
