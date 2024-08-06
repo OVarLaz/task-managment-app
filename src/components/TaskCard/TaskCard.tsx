@@ -79,11 +79,10 @@ const TaskCard = ({ task, onDelete, refetchTask }: TaskCardProps) => {
         <Group style={{ marginTop: '8px' }} justify="space-between">
           <Tooltip label={task.assignee?.fullName} withArrow>
             <Avatar
-              src={
-                task.assignee?.avatar ||
-                `https://api.adorable.io/avatars/40/${task.assignee?.email}.png`
-              }
-              alt={task.assignee?.fullName}
+              src={task.assignee?.fullName}
+              key={task.assignee?.fullName}
+              name={task.assignee?.fullName}
+              color="initials"
             />
           </Tooltip>
           <Group style={{ marginTop: '8px' }}>

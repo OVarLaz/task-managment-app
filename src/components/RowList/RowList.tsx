@@ -5,7 +5,7 @@ interface ListProps {
   tags: any;
   estimation: string;
   assignee: any;
-  dueDate: string;
+  dueDate: any;
 }
 
 const List = ({ name, tags, estimation, assignee, dueDate }: ListProps) => (

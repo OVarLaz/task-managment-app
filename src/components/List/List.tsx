@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { Box, Collapse, Grid } from '@mantine/core';
-import { statusType } from '@/types/shared';
-import { Status, Task } from '@/generated/graphql';
+import { Avatar, Badge, Box, Collapse, Flex, Grid, Text } from '@mantine/core';
+import { pointsType, statusType, tagsColor, tagsType } from '@/types/shared';
+import { Status, Task, TaskTag } from '@/generated/graphql';
 import RowList from '../RowList';
+import { getDueDateLabel, isDueDateValid } from '@/utils/dates';
 
 interface ListProps {
   statuses: Status[];
@@ -48,16 +49,42 @@ const List = ({ statuses, tasksByStatus }: ListProps) => {
             </Grid>
             <Collapse in={openedSections[status]}>
               <Box mt="sm">
-                {tasksByStatus[status].map((task: Task) => (
-                  <RowList
-                    key={task.id}
-                    name={task.name}
-                    tags={task.tags}
-                    estimation={task.pointEstimate}
-                    assignee={task.assignee?.fullName}
-                    dueDate={task.dueDate}
-                  />
-                ))}
+                {tasksByStatus[status].map((task: Task) => {
+                  const isDueDate = isDueDateValid(task.dueDate);
+                  return (
+                    <RowList
+                      key={task.id}
+                      name={task.name}
+                      tags={
+                        task.tags &&
+                        task.tags.map((tag: TaskTag) => (
+                          <Badge key={tag} variant="light" radius="sm" color={tagsColor[tag]}>
+                            {tagsType[tag]}
+                          </Badge>
+                        ))
+                      }
+                      estimation={pointsType[task.pointEstimate]}
+                      assignee={
+                        task.assignee ? (
+                          <Flex flex="1" gap="xs" w={150} style={{ alignItems: 'center' }}>
+                            <Avatar
+                              src={task.assignee?.fullName}
+                              key={task.assignee?.fullName}
+                              name={task.assignee?.fullName}
+                              color="initials"
+                            />
+                            <Text truncate="end">{task.assignee?.fullName}</Text>
+                          </Flex>
+                        ) : null
+                      }
+                      dueDate={
+                        <Text style={{ color: `${isDueDate ? '#C7C7C7' : '#DA584B'}` }}>
+                          {getDueDateLabel(task.dueDate)}
+                        </Text>
+                      }
+                    />
+                  );
+                })}
               </Box>
             </Collapse>
           </Box>
