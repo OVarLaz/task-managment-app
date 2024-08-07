@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import { DashboardPage } from './pages/Dashboard.page';
+import { MyTasksPage } from './pages/MyTasks.page';
 import Layout from './components/Layout';
 
 const router = createBrowserRouter([
@@ -8,6 +9,14 @@ const router = createBrowserRouter([
     element: (
       <Layout>
         <DashboardPage />{' '}
+      </Layout>
+    ),
+  },
+  {
+    path: '/my-tasks',
+    element: (
+      <Layout>
+        <MyTasksPage />{' '}
       </Layout>
     ),
   },
