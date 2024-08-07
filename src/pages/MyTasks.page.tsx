@@ -1,16 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
-import {
-  Text,
-  Loader,
-  Center,
-  TextInput,
-  Button,
-  Group,
-  ActionIcon,
-  Flex,
-  Avatar,
-} from '@mantine/core';
+import { Text, Loader, Center, Button, Group, ActionIcon } from '@mantine/core';
 
 import TaskForm from '@/components/TaskForm';
 import {
@@ -20,11 +10,12 @@ import {
   Task,
   TasksDocument,
 } from '@/generated/graphql';
-import { AddIcon, GroupIcon, ListIcon, NotificationIcon, SearchIcon } from '@/components/ui/Icon';
+import { AddIcon, GroupIcon, ListIcon } from '@/components/ui/Icon';
 import { statusType } from '@/types/shared';
 import Kamban from '@/components/Kamban';
 import List from '@/components/List';
 import { useAuth } from '@/context/AuthContext';
+import SearchHeader from '@/components/SearchHeader';
 
 export function MyTasksPage() {
   const [search, setSearch] = useState('');
@@ -110,30 +101,7 @@ export function MyTasksPage() {
 
   return (
     <>
-      <TextInput
-        placeholder="Search tasks"
-        size="lg"
-        value={search}
-        onChange={handleSearchChange}
-        style={{ marginBottom: '16px', padding: '1rem' }}
-        leftSection={<SearchIcon />}
-        rightSection={
-          <Flex
-            gap={6}
-            align="center"
-            style={{ padding: '1rem', position: 'relative', right: '15px' }}
-          >
-            <NotificationIcon />{' '}
-            <Avatar
-              src={user?.fullName}
-              alt={user?.fullName}
-              key={user?.fullName}
-              name={user?.fullName}
-              color="initials"
-            />
-          </Flex>
-        }
-      />
+      <SearchHeader search={search} handleSearchChange={handleSearchChange} user={user} />
       <Group justify="space-between" style={{ padding: '0 1rem' }}>
         <Group>
           <ActionIcon
@@ -164,6 +132,7 @@ export function MyTasksPage() {
           error={createError}
           onClose={handleCloseModal}
           refetchTask={handleTaskRefresh}
+          userId={user?.id}
         />
       )}
       {view === 'group' ? (

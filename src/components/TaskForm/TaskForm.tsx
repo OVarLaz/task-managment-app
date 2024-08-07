@@ -41,6 +41,7 @@ interface TaskFormProps {
   error: ApolloError | undefined;
   onClose: () => void;
   refetchTask: () => void;
+  userId?: string;
 }
 
 const TaskForm = ({
@@ -51,12 +52,13 @@ const TaskForm = ({
   error,
   onClose,
   refetchTask,
+  userId,
 }: TaskFormProps) => {
   const [id] = useState<string | undefined>(task?.id);
   const [name, setName] = useState<string>(task?.name || '');
   const [pointEstimate, setPointEstimate] = useState<string | undefined>(task?.pointEstimate);
   const [status, setStatus] = useState<string | null>(task?.status || '');
-  const [assignee, setAssignee] = useState<string | null>(task?.assignee?.id || null);
+  const [assignee, setAssignee] = useState<string | null>(userId || task?.assignee?.id || null);
   const [tags, setTags] = useState<string[] | undefined>(task?.tags || []);
   const [dueDate, setDueDate] = useState<Date | null>(null);
 
@@ -148,20 +150,22 @@ const TaskForm = ({
           value={pointEstimate}
           onChange={(value) => setPointEstimate(value || '')}
         />
-        <Select
-          placeholder="Assignee"
-          leftSection={<UserIcon />}
-          value={assignee}
-          onChange={setAssignee}
-          renderOption={selectItem}
-          data={users.map((user: User) => ({
-            value: user.id,
-            label: user.fullName,
-            image: user.avatar,
-          }))}
-          searchable
-          clearable
-        />
+        {!userId && (
+          <Select
+            placeholder="Assignee"
+            leftSection={<UserIcon />}
+            value={assignee}
+            onChange={setAssignee}
+            renderOption={selectItem}
+            data={users.map((user: User) => ({
+              value: user.id,
+              label: user.fullName,
+              image: user.avatar,
+            }))}
+            searchable
+            clearable
+          />
+        )}
         <Select
           placeholder="Status"
           leftSection={<BadgeIcon />}
