@@ -54,8 +54,8 @@ export function DashboardPage() {
     }
   };
 
-  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
+  const handleSearchChange = (event: string) => {
+    setSearch(event);
   };
 
   useEffect(() => {
