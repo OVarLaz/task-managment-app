@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { useForm } from '@mantine/form';
 import {
   ApolloCache,
   ApolloError,
@@ -54,23 +55,22 @@ const TaskForm = ({
   refetchTask,
   userId,
 }: TaskFormProps) => {
-  const [id] = useState<string | undefined>(task?.id);
-  const [name, setName] = useState<string>(task?.name || '');
-  const [pointEstimate, setPointEstimate] = useState<string | undefined>(task?.pointEstimate);
-  const [status, setStatus] = useState<string | null>(task?.status || '');
-  const [assignee, setAssignee] = useState<string | null>(userId || task?.assignee?.id || null);
-  const [tags, setTags] = useState<string[] | undefined>(task?.tags || []);
-  const [dueDate, setDueDate] = useState<Date | null>(null);
-
-  useEffect(() => {
-    if (task?.dueDate) {
-      const date = new Date(task.dueDate);
-      // eslint-disable-next-line no-restricted-globals
-      if (!isNaN(date.getTime())) {
-        setDueDate(date);
-      }
-    }
-  }, [task?.dueDate]);
+  const form = useForm({
+    initialValues: {
+      name: task?.name || '',
+      pointEstimate: task?.pointEstimate,
+      status: task?.status || '',
+      assignee: userId || task?.assignee?.id || null,
+      tags: task?.tags || [],
+      dueDate: task?.dueDate ? new Date(task.dueDate) : null,
+    },
+    validate: {
+      name: (value) => (value ? null : 'Name is required'),
+      pointEstimate: (value) => (value ? null : 'Point is required'),
+      status: (value) => (value ? null : 'Status is required'),
+      dueDate: (value) => (value ? null : 'Due date is required'),
+    },
+  });
 
   const pointsOptions = Object.entries(pointsType).map(([key, value]) => ({
     value: key,
@@ -90,6 +90,8 @@ const TaskForm = ({
   const { loading: loadUsers, error: errorUsers, data: usersData } = useQuery(UsersDocument);
 
   const handleCreateTask = async () => {
+    const { name, status, pointEstimate, assignee, tags, dueDate } = form.values;
+
     try {
       await onMutate({
         variables: {
@@ -100,7 +102,7 @@ const TaskForm = ({
             assigneeId: assignee,
             tags,
             dueDate: dueDate?.toISOString(),
-            ...(edit && { id }),
+            ...(edit && { id: task?.id }),
           },
         },
       });
@@ -135,68 +137,64 @@ const TaskForm = ({
 
   return (
     <Modal opened onClose={onClose} withCloseButton={false} size="auto" centered>
-      <TextInput
-        variant="unstyled"
-        placeholder="Task Title"
-        value={name}
-        onChange={(event) => setName(event.currentTarget.value)}
-        style={{ marginBottom: '1rem' }}
-      />
-      <Flex gap={4} align="center">
-        <Select
-          placeholder="Estimate"
-          leftSection={<QuantityIcon />}
-          data={pointsOptions}
-          value={pointEstimate}
-          onChange={(value) => setPointEstimate(value || '')}
+      <form onSubmit={form.onSubmit(handleCreateTask)}>
+        <TextInput
+          variant="unstyled"
+          placeholder="Task Title"
+          {...form.getInputProps('name')}
+          style={{ marginBottom: '1rem' }}
         />
-        {!userId && (
+        <Flex gap={4} align="center">
           <Select
-            placeholder="Assignee"
-            leftSection={<UserIcon />}
-            value={assignee}
-            onChange={setAssignee}
-            renderOption={selectItem}
-            data={users.map((user: User) => ({
-              value: user.id,
-              label: user.fullName,
-              image: user.avatar,
-            }))}
-            searchable
-            clearable
+            placeholder="Estimate"
+            leftSection={<QuantityIcon />}
+            data={pointsOptions}
+            {...form.getInputProps('pointEstimate')}
           />
-        )}
-        <Select
-          placeholder="Status"
-          leftSection={<BadgeIcon />}
-          data={statusOptions}
-          value={status}
-          onChange={(value) => setStatus(value || '')}
-        />
-        <MultiSelect
-          placeholder="Labels"
-          leftSection={<LabelIcon />}
-          data={tagsOptions}
-          value={tags}
-          onChange={(value) => setTags(value)}
-          multiple
-        />
-        <DatePickerInput
-          placeholder="Due Date"
-          leftSection={<CalendarIcon />}
-          value={dueDate}
-          onChange={setDueDate}
-        />
-      </Flex>
-      <Group mt="md" justify="flex-end">
-        <Button variant="transparent" color="white" onClick={onClose}>
-          Cancel
-        </Button>
-        <Button onClick={handleCreateTask} loading={loading} color="#DA584B">
-          {edit ? 'Update' : 'Create'}
-        </Button>
-      </Group>
-      {error && <div style={{ color: 'red' }}>{error.message}</div>}
+          {!userId && (
+            <Select
+              placeholder="Assignee"
+              leftSection={<UserIcon />}
+              {...form.getInputProps('assignee')}
+              renderOption={selectItem}
+              data={users.map((user: User) => ({
+                value: user.id,
+                label: user.fullName,
+                image: user.avatar,
+              }))}
+              searchable
+              clearable
+            />
+          )}
+          <Select
+            placeholder="Status"
+            leftSection={<BadgeIcon />}
+            data={statusOptions}
+            {...form.getInputProps('status')}
+          />
+          <MultiSelect
+            placeholder="Labels"
+            leftSection={<LabelIcon />}
+            data={tagsOptions}
+            {...form.getInputProps('tags')}
+            multiple
+          />
+          <DatePickerInput
+            placeholder="Due Date"
+            leftSection={<CalendarIcon />}
+            {...form.getInputProps('dueDate')}
+          />
+        </Flex>
+        <Group mt="md" justify="flex-end">
+          <Button variant="transparent" color="white" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button type="submit" loading={loading} color="#DA584B">
+            {edit ? 'Update' : 'Create'}
+          </Button>
+        </Group>
+        {error && <div style={{ color: 'red' }}>{error.message}</div>}
+      </form>
     </Modal>
   );
 };
